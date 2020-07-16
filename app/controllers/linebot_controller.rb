@@ -83,9 +83,9 @@ class LinebotController < ApplicationController
           end
           # テキスト以外（画像等）のメッセージが送られた場合
           
-        else
-          push = "テキスト以外はわからないよ〜(；；)"
-        end
+        # else
+        #   push = "テキスト以外はわからないよ〜(；；)"
+        # end
         
         
           
