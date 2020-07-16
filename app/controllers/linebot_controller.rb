@@ -83,9 +83,9 @@ class LinebotController < ApplicationController
           end
           # テキスト以外（画像等）のメッセージが送られた場合
           
-        # else
-        #   push = "テキスト以外はわからないよ〜(；；)"
-        # end
+        else
+          push = "テキスト以外はわからないよ〜(；；)"
+        end
         when Line::Bot::Event::MessageType::Location
 　　　　　　# LINEの位置情報から緯度経度を取得
           latitude = event.message['latitude']
