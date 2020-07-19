@@ -23,7 +23,7 @@ class LinebotController < ApplicationController
         
           latitude = event.message['latitude']
           longitude = event.message['longitude']
-          appId = "取得したAPI KEY"
+          appId = "c793c2fa6eac6556fed8f41167fcc68a"
           url= "http://api.openweathermap.org/data/2.5/forecast?lon=#{longitude}&lat=#{latitude}&APPID=#{appId}&units=metric&mode=xml"
          # XMLをパースしていく
           xml  = open( url ).read.toutf8
