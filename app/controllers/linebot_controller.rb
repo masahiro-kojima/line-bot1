@@ -98,14 +98,16 @@ class LinebotController < ApplicationController
           end
           # テキスト以外（画像等）のメッセージが送られた場合
         else
-          push = "テキスト以外はわからないよ〜(；；)"
+          push = "a,テキスト以外はわからないよ〜(；；)"
         end
         
         message = {
           type: 'text',
           text: push
         }
+        # メッセージを返す。
         client.reply_message(event['replyToken'], message)
+        
         # LINEお友達追された場合（機能②）
       when Line::Bot::Event::Follow
         # 登録したユーザーのidをユーザーテーブルに格納
