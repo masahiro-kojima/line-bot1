@@ -36,21 +36,30 @@ class LinebotController < ApplicationController
             per06to12 = doc.elements[xpath + 'info[2]/rainfallchance/period[2]'].text
             per12to18 = doc.elements[xpath + 'info[2]/rainfallchance/period[3]'].text
             per18to24 = doc.elements[xpath + 'info[2]/rainfallchance/period[4]'].text
+            # もしどれかの時間帯で降水確率30%を超えていたら
             if per06to12.to_i >= min_per || per12to18.to_i >= min_per || per18to24.to_i >= min_per
+              # 雨が降りそうだとメッセを送る
               push =
                 "明日の天気だよね。\n明日は雨が降りそうだよ(>_<)\n今のところ降水確率はこんな感じだよ。\n　  6〜12時　#{per06to12}％\n　12〜18時　 #{per12to18}％\n　18〜24時　#{per18to24}％\nまた明日の朝の最新の天気予報で雨が降りそうだったら教えるね！"
+            　　# 降水確率が30%未満だったら
             else
+              # 雨が降らないと出力
               push =
                 "明日の天気？\n明日は雨が降らない予定だよ(^^)\nまた明日の朝の最新の天気予報で雨が降りそうだったら教えるね！"
             end
+            # 明後日or あさってとメッセがきたら
           when /.*(明後日|あさって).*/
             per06to12 = doc.elements[xpath + 'info[3]/rainfallchance/period[2]l'].text
             per12to18 = doc.elements[xpath + 'info[3]/rainfallchance/period[3]l'].text
             per18to24 = doc.elements[xpath + 'info[3]/rainfallchance/period[4]l'].text
+            # 降水確率が30%を超えていたら
             if per06to12.to_i >= min_per || per12to18.to_i >= min_per || per18to24.to_i >= min_per
+              # 雨が降りそうだと出力
               push =
                 "明後日の天気だよね。\n何かあるのかな？\n明後日は雨が降りそう…\n当日の朝に雨が降りそうだったら教えるからね！"
+                # 降水確率30%未満だったら
             else
+              # 腫れそうだと出力する
               push =
                 "明後日の天気？\n気が早いねー！何かあるのかな。\n明後日は雨は降らない予定だよ(^^)\nまた当日の朝の最新の天気予報で雨が降りそうだったら教えるからね！"
             end
@@ -60,59 +69,38 @@ class LinebotController < ApplicationController
           when /.*(こんにちは|こんばんは|初めまして|はじめまして|おはよう).*/
             push =
               "こんにちは。\n声をかけてくれてありがとう\n今日があなたにとっていい日になりますように(^^)"
+            # 適当なテキストがおくられてきたら
           else
+            # 降水確率を出力する
             per06to12 = doc.elements[xpath + 'info/rainfallchance/period[2]l'].text
             per12to18 = doc.elements[xpath + 'info/rainfallchance/period[3]l'].text
             per18to24 = doc.elements[xpath + 'info/rainfallchance/period[4]l'].text
+            # もしどれかの時間帯で降水確率30%を超えていたら
             if per06to12.to_i >= min_per || per12to18.to_i >= min_per || per18to24.to_i >= min_per
               word =
                 ["雨だけど元気出していこうね！",
                  "雨に負けずファイト！！",
                  "雨だけどああたの明るさでみんなを元気にしてあげて(^^)"].sample
+                # 降水確率と雨であることを出力する
               push =
                 "今日の天気？\n今日は雨が降りそうだから傘があった方が安心だよ。\n　  6〜12時　#{per06to12}％\n　12〜18時　 #{per12to18}％\n　18〜24時　#{per18to24}％\n#{word}"
+            # 降水確率が30%未満だったら
             else
               word =
                 ["天気もいいから一駅歩いてみるのはどう？(^^)",
                  "今日会う人のいいところを見つけて是非その人に教えてあげて(^^)",
                  "素晴らしい一日になりますように(^^)",
                  "雨が降っちゃったらごめんね(><)"].sample
+                # 雨が降りそうにないことを伝える
               push =
                 "今日の天気？\n今日は雨は降らなさそうだよ。\n#{word}"
             end
           end
           # テキスト以外（画像等）のメッセージが送られた場合
-        when Line::Bot::Event::MessageType::Location
-　　　　　　# LINEの位置情報から緯度経度を取得
-          latitude = event.message['latitude']
-          longitude = event.message['longitude']
-          appId = "c793c2fa6eac6556fed8f41167fcc68a"
-          url= "http://api.openweathermap.org/data/2.5/forecast?lon=#{longitude}&lat=#{latitude}&APPID=#{appId}&units=metric&mode=xml"
-         # XMLをパースしていく
-          xml  = open( url ).read.toutf8
-          doc = REXML::Document.new(xml)
-          xpath = 'weatherdata/forecast/time[1]/'
-          nowWearther = doc.elements[xpath + 'symbol'].attributes['name']
-          nowTemp = doc.elements[xpath + 'temperature'].attributes['value']
-          case nowWearther
-          when /.*(clear sky|few clouds).*/
-            push = "現在地の天気は晴れです\u{2600}\n\n現在の気温は#{nowTemp}℃です\u{1F321}"
-          when /.*(scattered clouds|broken clouds|overcast clouds).*/
-            push = "現在地の天気は曇りです\u{2601}\n\n現在の気温は#{nowTemp}℃です\u{1F321}"
-          when /.*(rain|thunderstorm|drizzle).*/
-            push = "現在地の天気は雨です\u{2614}\n\n現在の気温は#{nowTemp}℃です\u{1F321}"
-          when /.*(snow).*/
-            push = "現在地の天気は雪です\u{2744}\n\n現在の気温は#{nowTemp}℃です\u{1F321}"
-          when /.*(fog|mist|Haze).*/
-            push = "現在地では霧が発生しています\u{1F32B}\n\n現在の気温は#{nowTemp}℃です\u{1F321}"
-          else
-            push = "現在地では何かが発生していますが、\nご自身でお確かめください。\u{1F605}\n\n現在の気温は#{nowTemp}℃です\u{1F321}"
-          end
-          
-          
         else
           push = "テキスト以外はわからないよ〜(；；)"
         end
+        
         message = {
           type: 'text',
           text: push
