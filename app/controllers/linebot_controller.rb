@@ -84,17 +84,17 @@ class LinebotController < ApplicationController
       #         push =
       #           "明日の天気？\n明日は雨が降らない予定だよ(^^)\nまた明日の朝の最新の天気予報で雨が降りそうだったら教えるね！"
       #     end
-　　# # 　明後日
+# # 　明後日
   #       when /.*(明後日|あさって).*/
 	 #     	# 降水確率
   #           per06to12 = doc.elements[xpath + 'info[3]/rainfallchance/period[2]l'].text
   #           per12to18 = doc.elements[xpath + 'info[3]/rainfallchance/period[3]l'].text
   #           per18to24 = doc.elements[xpath + 'info[3]/rainfallchance/period[4]l'].text
   #           if per06to12.to_i >= min_per || per12to18.to_i >= min_per || per18to24.to_i >= min_per
-　　# 　　    # 雨が降る
+ # 　　    # 雨が降る
   #             push =
   #               "明後日の天気だよね。\n何かあるのかな？\n明後日は雨が降りそう…\n当日の朝に雨が降りそうだったら教えるからね！"
-　　#       # 　あめは降らない
+#       # 　あめは降らない
   #           else
   #             push =
   #               "明後日の天気？\n気が早いねー！何かあるのかな。\n明後日は雨は降らない予定だよ(^^)\nまた当日の朝の最新の天気予報で雨が降りそうだったら教えるからね！"
@@ -137,7 +137,7 @@ class LinebotController < ApplicationController
   #               "今日の天気？\n今日は雨は降らなさそうだよ。\n#{word}"
   #           end
   #         end
-　　# 　現在地、テキスト以外
+# 　現在地、テキスト以外
         else
           push = "テキスト以外はわからないよ〜(；；)"
         end
