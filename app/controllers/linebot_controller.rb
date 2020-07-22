@@ -60,29 +60,30 @@ class LinebotController < ApplicationController
           end
         # テキスト
         when Line::Bot::Event::MessageType::Text
-                    input = event.message['text']
-          url  = "https://www.drk7.jp/weather/xml/13.xml"
-          xml  = open( url ).read.toutf8
-          doc = REXML::Document.new(xml)
-          xpath = 'weatherforecast/pref/area[4]/'
-          min_per = 30
-      　case input
-          # 明日
-        when /.*(明日|あした).*/
-		      # 降水確率
-            per06to12 = doc.elements[xpath + 'info[2]/rainfallchance/period[2]'].text
-            per12to18 = doc.elements[xpath + 'info[2]/rainfallchance/period[3]'].text
-            per18to24 = doc.elements[xpath + 'info[2]/rainfallchance/period[4]'].text
-	    　     # もし　　降水確率　　30        または　　　降水確率　　　　
-           if per06to12.to_i >= min_per || per12to18.to_i >= min_per || per18to24.to_i >= min_per
-	          	# 雨が降る
-              push =
-                "明日の天気だよね。\n明日は雨が降りそうだよ(>_<)\n今のところ降水確率はこんな感じだよ。\n　  6〜12時　#{per06to12}％\n　12〜18時　 #{per12to18}％\n　18〜24時　#{per18to24}％\nまた明日の朝の最新の天気予報で雨が降りそうだったら教えるね！"
-           else
-	       #	雨は降らない
-              push =
-                "明日の天気？\n明日は雨が降らない予定だよ(^^)\nまた明日の朝の最新の天気予報で雨が降りそうだったら教えるね！"
-           end
+          push="ねる"
+      #               input = event.message['text']
+      #     url  = "https://www.drk7.jp/weather/xml/13.xml"
+      #     xml  = open( url ).read.toutf8
+      #     doc = REXML::Document.new(xml)
+      #     xpath = 'weatherforecast/pref/area[4]/'
+      #     min_per = 30
+      # case input
+      #     # 明日
+      #   when /.*(明日|あした).*/
+		    #   # 降水確率
+      #       per06to12 = doc.elements[xpath + 'info[2]/rainfallchance/period[2]'].text
+      #       per12to18 = doc.elements[xpath + 'info[2]/rainfallchance/period[3]'].text
+      #       per18to24 = doc.elements[xpath + 'info[2]/rainfallchance/period[4]'].text
+	     #   # もし　　降水確率　　30        または　　　降水確率　　　　
+      #     if per06to12.to_i >= min_per || per12to18.to_i >= min_per || per18to24.to_i >= min_per
+	     #     	# 雨が降る
+      #         push =
+      #           "明日の天気だよね。\n明日は雨が降りそうだよ(>_<)\n今のところ降水確率はこんな感じだよ。\n　  6〜12時　#{per06to12}％\n　12〜18時　 #{per12to18}％\n　18〜24時　#{per18to24}％\nまた明日の朝の最新の天気予報で雨が降りそうだったら教えるね！"
+      #     else
+	     #  #	雨は降らない
+      #         push =
+      #           "明日の天気？\n明日は雨が降らない予定だよ(^^)\nまた明日の朝の最新の天気予報で雨が降りそうだったら教えるね！"
+      #     end
 　　# # 　明後日
   #       when /.*(明後日|あさって).*/
 	 #     	# 降水確率
