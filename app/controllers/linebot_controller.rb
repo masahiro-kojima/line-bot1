@@ -26,7 +26,7 @@ class LinebotController < ApplicationController
           # 軽度
           longitude = event.message['longitude']
           appId = "c793c2fa6eac6556fed8f41167fcc68a"
-                    # 天気url                                           緯度　　　　　　軽度　　　　　　　id
+                    # 天気url                                           緯度           軽度                id
           url= "http://api.openweathermap.org/data/2.5/forecast?lon=#{longitude}&lat=#{latitude}&APPID=#{appId}&units=metric&mode=xml"
                 # 開く
           xml  = open( url ).read.toutf8
@@ -60,13 +60,13 @@ class LinebotController < ApplicationController
           end
         # テキスト
           when Line::Bot::Event::MessageType::Text
-              input = event.message['text']
+              # input = event.message['text']
               url  = "https://www.drk7.jp/weather/xml/13.xml"
               xml  = open( url ).read.toutf8
               doc = REXML::Document.new(xml)
               xpath = 'weatherforecast/pref/area[4]/'
-              min_per = 30
-            case input
+              # min_per = 30
+            # case input
           # 明日
             when /.*(明日|あした).*/
               per06to12 = doc.elements[xpath + 'info[2]/rainfallchance/period[2]'].text
@@ -76,7 +76,7 @@ class LinebotController < ApplicationController
               if per06to12.to_i >= min_per || per12to18.to_i >= min_per || per18to24.to_i >= min_per
               # 雨
                 push =
-                  "明日の天気だよね。\n明日は雨が降りそうだよ(>_<)\n今のところ降水確率はこんな感じだよ。\n　  6〜12時　#{per06to12}％\n　12〜18時　 #{per12to18}％\n　18〜24時　#{per18to24}％\nまた明日の朝の最新の天気予報で雨が降りそうだったら教えるね！"
+                  "明日の天気だよね。\n明日は雨が降りそうだよ(>_<)\n今のところ降水確率はこんな感じだよ。\n 6〜12時 #{per06to12}％\n 12〜18時  #{per12to18}％\n 18〜24時 #{per18to24}％\nまた明日の朝の最新の天気予報で雨が降りそうだったら教えるね！"
             
               else
               # 晴
@@ -84,35 +84,35 @@ class LinebotController < ApplicationController
                   "明日の天気？\n明日は雨が降らない予定だよ(^^)\nまた明日の朝の最新の天気予報で雨が降りそうだったら教えるね！"
               end
             # 明後日
-            when /.*(明後日|あさって).*/
-              per06to12 = doc.elements[xpath + 'info[3]/rainfallchance/period[2]l'].text
-              per12to18 = doc.elements[xpath + 'info[3]/rainfallchance/period[3]l'].text
-              per18to24 = doc.elements[xpath + 'info[3]/rainfallchance/period[4]l'].text
-              if per06to12.to_i >= min_per || per12to18.to_i >= min_per || per18to24.to_i >= min_per
-             #雨
-               push =
-                  "明後日の天気だよね。\n何かあるのかな？\n明後日は雨が降りそう…\n当日の朝に雨が降りそうだったら教えるからね！"
-              else
-              # 晴
-               push =
-                  "明後日の天気？\n気が早いねー！何かあるのかな。\n明後日は雨は降らない予定だよ(^^)\nまた当日の朝の最新の天気予報で雨が降りそうだったら教えるからね"
-              end
-            # かわいいなど
-            when /.*(かわいい|可愛い|カワイイ|きれい|綺麗|キレイ|素敵|ステキ|すてき|面白い|おもしろい|ありがと|すごい|スゴイ|スゴい|好き|頑張|がんば|ガンバ).*/
-  		      # ありがとう
-               push =
-                "ありがとう！！！\n優しい言葉をかけてくれるあなたはとても素敵です(^^)"
-          # 	こんにちは
-            when /.*(こんにちは|こんばんは|初めまして|はじめまして|おはよう).*
-  		    # こんにちは
-               push =
-                "こんにちは。\n声をかけてくれてありがとう\n今日があなたにとっていい日になりますように(^^)"
-          # 適当なテキスト
+        #     when /.*(明後日|あさって).*/
+        #       per06to12 = doc.elements[xpath + 'info[3]/rainfallchance/period[2]l'].text
+        #       per12to18 = doc.elements[xpath + 'info[3]/rainfallchance/period[3]l'].text
+        #       per18to24 = doc.elements[xpath + 'info[3]/rainfallchance/period[4]l'].text
+        #       if per06to12.to_i >= min_per || per12to18.to_i >= min_per || per18to24.to_i >= min_per
+        #     #雨
+        #       push =
+        #           "明後日の天気だよね。\n何かあるのかな？\n明後日は雨が降りそう…\n当日の朝に雨が降りそうだったら教えるからね！"
+        #       else
+        #       # 晴
+        #       push =
+        #           "明後日の天気？\n気が早いねー！何かあるのかな。\n明後日は雨は降らない予定だよ(^^)\nまた当日の朝の最新の天気予報で雨が降りそうだったら教えるからね"
+        #       end
+        #     # かわいいなど
+        #     when /.*(かわいい|可愛い|カワイイ|きれい|綺麗|キレイ|素敵|ステキ|すてき|面白い|おもしろい|ありがと|すごい|スゴイ|スゴい|好き|頑張|がんば|ガンバ).*/
+  		    #   # ありがとう
+        #       push =
+        #         "ありがとう！！！\n優しい言葉をかけてくれるあなたはとても素敵です(^^)"
+        #   # 	こんにちは
+        #     when /.*(こんにちは|こんばんは|初めまして|はじめまして|おはよう).*
+  		    # # こんにちは
+        #       push =
+        #         "こんにちは。\n声をかけてくれてありがとう\n今日があなたにとっていい日になりますように(^^)"
+        #   # 適当なテキスト
           
-    
+        # 画像など
           else
             push = "テキスト以外はわからないよ〜(；；)"
-          end
+        end
       # 返信
     message = {
           type: 'text',
@@ -121,7 +121,6 @@ class LinebotController < ApplicationController
         }
         #返答                                 返信
     client.reply_message(event['replyToken'], message)
-        
         # フォロー
       when Line::Bot::Event::Follow
        
