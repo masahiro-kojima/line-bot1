@@ -59,94 +59,67 @@ class LinebotController < ApplicationController
             push = "現在地では何かが発生していますが、\nご自身でお確かめください。\u{1F605}\n\n現在の気温は#{nowTemp}℃です\u{1F321}"
           end
         # テキスト
-        when Line::Bot::Event::MessageType::Text
-          input = event.message['text']
-          url  = "https://www.drk7.jp/weather/xml/13.xml"
-          xml  = open( url ).read.toutf8
-          doc = REXML::Document.new(xml)
-          xpath = 'weatherforecast/pref/area[4]/'
-          min_per = 30
-        case input
-        # 明日
-        when /.*(明日|あした).*/
-          per06to12 = doc.elements[xpath + 'info[2]/rainfallchance/period[2]'].text
-          per12to18 = doc.elements[xpath + 'info[2]/rainfallchance/period[3]'].text
-          per18to24 = doc.elements[xpath + 'info[2]/rainfallchance/period[4]'].text
-          # 降水確率
-          if per06to12.to_i >= min_per || per12to18.to_i >= min_per || per18to24.to_i >= min_per
-            # 雨
-            push =
-                "明日の天気だよね。\n明日は雨が降りそうだよ(>_<)\n今のところ降水確率はこんな感じだよ。\n　  6〜12時　#{per06to12}％\n　12〜18時　 #{per12to18}％\n　18〜24時　#{per18to24}％\nまた明日の朝の最新の天気予報で雨が降りそうだったら教えるね！"
-          
-          else
-            # 晴
-             push =
-                "明日の天気？\n明日は雨が降らない予定だよ(^^)\nまた明日の朝の最新の天気予報で雨が降りそうだったら教えるね！"
-          end
-          
-        when /.*(明後日|あさって).*/
-          per06to12 = doc.elements[xpath + 'info[3]/rainfallchance/period[2]l'].text
-          per12to18 = doc.elements[xpath + 'info[3]/rainfallchance/period[3]l'].text
-          per18to24 = doc.elements[xpath + 'info[3]/rainfallchance/period[4]l'].text
-          if per06to12.to_i >= min_per || per12to18.to_i >= min_per || per18to24.to_i >= min_per
-           #雨
-           push =
-                "明後日の天気だよね。\n何かあるのかな？\n明後日は雨が降りそう…\n当日の朝に雨が降りそうだったら教えるからね！"
-          else
-            # 晴
-             push =
-                "明後日の天気？\n気が早いねー！何かあるのかな。\n明後日は雨は降らない予定だよ(^^)\nまた当日の朝の最新の天気予報で雨が降りそうだったら教えるからね"
-          end
-          # かわいいなど
-        when /.*(かわいい|可愛い|カワイイ|きれい|綺麗|キレイ|素敵|ステキ|すてき|面白い|おもしろい|ありがと|すごい|スゴイ|スゴい|好き|頑張|がんば|ガンバ).*/
-		# ありがとう
-            push =
-              "ありがとう！！！\n優しい言葉をかけてくれるあなたはとても素敵です(^^)"
-     # 	こんにちは
-        when /.*(こんにちは|こんばんは|初めまして|はじめまして|おはよう).*
-		# こんにちは
-            push =
-              "こんにちは。\n声をかけてくれてありがとう\n今日があなたにとっていい日になりますように(^^)"
-    # 適当なテキスト
-        else
-      # 降水確率
-            per06to12 = doc.elements[xpath + 'info/rainfallchance/period[2]l'].text
-            per12to18 = doc.elements[xpath + 'info/rainfallchance/period[3]l'].text
-            per18to24 = doc.elements[xpath + 'info/rainfallchance/period[4]l'].text
+          when Line::Bot::Event::MessageType::Text
+              input = event.message['text']
+              url  = "https://www.drk7.jp/weather/xml/13.xml"
+              xml  = open( url ).read.toutf8
+              doc = REXML::Document.new(xml)
+              xpath = 'weatherforecast/pref/area[4]/'
+              min_per = 30
+            case input
+          # 明日
+            when /.*(明日|あした).*/
+              per06to12 = doc.elements[xpath + 'info[2]/rainfallchance/period[2]'].text
+              per12to18 = doc.elements[xpath + 'info[2]/rainfallchance/period[3]'].text
+              per18to24 = doc.elements[xpath + 'info[2]/rainfallchance/period[4]'].text
             # 降水確率
-            if per06to12.to_i >= min_per || per12to18.to_i >= min_per || per18to24.to_i >= min_per
-            # 雨
-              word =
-                ["雨だけど元気出していこうね！",
-                 "雨に負けずファイト！！",
-                 "雨だけどああたの明るさでみんなを元気にしてあげて(^^)"].sample
-	        	# 雨
-              push =                                                                            #降水確率                                                               雨
-                "今日の天気？\n今日は雨が降りそうだから傘があった方が安心だよ。\n6〜12時#{per06to12}％\n12〜18時#{per12to18}％\n18〜24時#{per18to24}％\n#{word}"
-            else
-         # 	晴れ
-              word =
-                ["天気もいいから一駅歩いてみるのはどう？(^^)",
-                 "今日会う人のいいところを見つけて是非その人に教えてあげて(^^)",
-                 "素晴らしい一日になりますように(^^)",
-                 "雨が降っちゃったらごめんね(><)"].sample
-	       	# 晴れ
-              push =
-                "今日の天気？\n今日は雨は降らなさそうだよ。\n#{word}"
-            end
-        end
-
+              if per06to12.to_i >= min_per || per12to18.to_i >= min_per || per18to24.to_i >= min_per
+              # 雨
+                push =
+                  "明日の天気だよね。\n明日は雨が降りそうだよ(>_<)\n今のところ降水確率はこんな感じだよ。\n　  6〜12時　#{per06to12}％\n　12〜18時　 #{per12to18}％\n　18〜24時　#{per18to24}％\nまた明日の朝の最新の天気予報で雨が降りそうだったら教えるね！"
+            
+              else
+              # 晴
+                push =
+                  "明日の天気？\n明日は雨が降らない予定だよ(^^)\nまた明日の朝の最新の天気予報で雨が降りそうだったら教えるね！"
+              end
+            # 明後日
+            when /.*(明後日|あさって).*/
+              per06to12 = doc.elements[xpath + 'info[3]/rainfallchance/period[2]l'].text
+              per12to18 = doc.elements[xpath + 'info[3]/rainfallchance/period[3]l'].text
+              per18to24 = doc.elements[xpath + 'info[3]/rainfallchance/period[4]l'].text
+              if per06to12.to_i >= min_per || per12to18.to_i >= min_per || per18to24.to_i >= min_per
+             #雨
+               push =
+                  "明後日の天気だよね。\n何かあるのかな？\n明後日は雨が降りそう…\n当日の朝に雨が降りそうだったら教えるからね！"
+              else
+              # 晴
+               push =
+                  "明後日の天気？\n気が早いねー！何かあるのかな。\n明後日は雨は降らない予定だよ(^^)\nまた当日の朝の最新の天気予報で雨が降りそうだったら教えるからね"
+              end
+            # かわいいなど
+            when /.*(かわいい|可愛い|カワイイ|きれい|綺麗|キレイ|素敵|ステキ|すてき|面白い|おもしろい|ありがと|すごい|スゴイ|スゴい|好き|頑張|がんば|ガンバ).*/
+  		      # ありがとう
+               push =
+                "ありがとう！！！\n優しい言葉をかけてくれるあなたはとても素敵です(^^)"
+          # 	こんにちは
+            when /.*(こんにちは|こんばんは|初めまして|はじめまして|おはよう).*
+  		    # こんにちは
+               push =
+                "こんにちは。\n声をかけてくれてありがとう\n今日があなたにとっていい日になりますように(^^)"
+          # 適当なテキスト
+          
     
-        else
-          push = "テキスト以外はわからないよ〜(；；)"
-        end
+          else
+            push = "テキスト以外はわからないよ〜(；；)"
+          end
       # 返信
-        message = {
+    message = {
           type: 'text',
                 # 送信する
           text: push
         }
-        #　　　　返答　　　　　　　　　　　　　返信
+        #返答                                 返信
     client.reply_message(event['replyToken'], message)
         
         # フォロー
