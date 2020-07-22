@@ -60,13 +60,13 @@ class LinebotController < ApplicationController
           end
         # テキスト
           when Line::Bot::Event::MessageType::Text
-              # input = event.message['text']
+              input = event.message['text']
               url  = "https://www.drk7.jp/weather/xml/13.xml"
               xml  = open( url ).read.toutf8
               doc = REXML::Document.new(xml)
               xpath = 'weatherforecast/pref/area[4]/'
-              # min_per = 30
-            # case input
+              min_per = 30
+            case input
           # 明日
             when /.*(明日|あした).*/
               per06to12 = doc.elements[xpath + 'info[2]/rainfallchance/period[2]'].text
@@ -110,6 +110,7 @@ class LinebotController < ApplicationController
         #   # 適当なテキスト
           
         # 画像など
+            end
           else
             push = "テキスト以外はわからないよ〜(；；)"
         end
