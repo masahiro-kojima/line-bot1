@@ -107,9 +107,9 @@ class LinebotController < ApplicationController
               push =
                 "こんにちは。\n声をかけてくれてありがとう\n今日があなたにとっていい日になりますように(^^)"
           
-        　 else
-          　 push = "テキスト以外はわからないよ〜(；；)"
-        　 end
+          else
+             push = "テキスト以外はわからないよ〜(；；)"
+            end
         end
         
       # 返信
