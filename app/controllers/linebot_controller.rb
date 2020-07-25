@@ -67,42 +67,58 @@ class LinebotController < ApplicationController
               min_per = 30
               # 入力
             case input
-          # 明日
-             when /.*(明日|あした).*/
-              per06to12 = doc.elements[xpath + 'info[2]/rainfallchance/period[2]'].text
-              per12to18 = doc.elements[xpath + 'info[2]/rainfallchance/period[3]'].text
-              per18to24 = doc.elements[xpath + 'info[2]/rainfallchance/period[4]'].text
-            # 降水確率
-              if per06to12.to_i >= min_per || per12to18.to_i >= min_per || per18to24.to_i >= min_per
-              # 雨
+            # 明日
+               when /.*(明日|あした).*/
+                per06to12 = doc.elements[xpath + 'info[2]/rainfallchance/period[2]'].text
+                per12to18 = doc.elements[xpath + 'info[2]/rainfallchance/period[3]'].text
+                per18to24 = doc.elements[xpath + 'info[2]/rainfallchance/period[4]'].text
+              # 降水確率
+                if per06to12.to_i >= min_per || per12to18.to_i >= min_per || per18to24.to_i >= min_per
+                # 雨
+                  push =
+                    "明日は雨がふりそう\n降水確率は\n 6〜12時 #{per06to12}％\n 12〜18時  #{per12to18}％\n 18〜24時 #{per18to24}％\nです。\n"
+              
+                else
+                # 晴
+                  push =
+                    "明日は雨が降らない予定\n降水確率は\n 6〜12時 #{per06to12}％\n 12〜18時  #{per12to18}％\n 18〜24時 #{per18to24}％\nです。\n"
+                end
+              # 明後日
+               when /.*(明後日|あさって).*/
+                per06to12 = doc.elements[xpath + 'info[3]/rainfallchance/period[2]l'].text
+                per12to18 = doc.elements[xpath + 'info[3]/rainfallchance/period[3]l'].text
+                per18to24 = doc.elements[xpath + 'info[3]/rainfallchance/period[4]l'].text
+                  if per06to12.to_i >= min_per || per12to18.to_i >= min_per || per18to24.to_i >= min_per
+            #     #雨
+                    push =
+                        "明後日は雨が降りそう\n降水確率は\n 6〜12時 #{per06to12}％\n 12〜18時  #{per12to18}％\n 18〜24時 #{per18to24}％\nです。\n"
+                  else
+              #       # 晴
+                    push =
+                        "明後日は雨は降らない予定\n降水確率は\n 6〜12時 #{per06to12}％\n 12〜18時  #{per12to18}％\n 18〜24時 #{per18to24}％\nです。\n"
+                  end
+          #   # 	こんにちは
+               when /.*(こんにちは|こんばんは|初めまして|はじめまして|おはよう).*/
                 push =
-                  "明日は雨がふりそう\n降水確率は\n 6〜12時 #{per06to12}％\n 12〜18時  #{per12to18}％\n 18〜24時 #{per18to24}％\nです。\n"
-            
-              else
-              # 晴
-                push =
-                  "明日は雨が降らない予定\n降水確率は\n 6〜12時 #{per06to12}％\n 12〜18時  #{per12to18}％\n 18〜24時 #{per18to24}％\nです。\n"
-              end
-            # 明後日
-            when /.*(明後日|あさって).*/
-              per06to12 = doc.elements[xpath + 'info[3]/rainfallchance/period[2]l'].text
-              per12to18 = doc.elements[xpath + 'info[3]/rainfallchance/period[3]l'].text
-              per18to24 = doc.elements[xpath + 'info[3]/rainfallchance/period[4]l'].text
-              if per06to12.to_i >= min_per || per12to18.to_i >= min_per || per18to24.to_i >= min_per
-        #     #雨
-              push =
-                  "明後日は雨が降りそう\n降水確率は\n 6〜12時 #{per06to12}％\n 12〜18時  #{per12to18}％\n 18〜24時 #{per18to24}％\nです。\n"
+                  "こんにちは。\n声をかけてくれてありがとう\n今日があなたにとっていい日になりますように(^^)"
+              # 適当なテキスト
+              when /.*(今日|きょう).*/
+                  # per06to12 = doc.elements[xpath + 'info/rainfallchance/period[2]l'].text
+                  # per12to18 = doc.elements[xpath + 'info/rainfallchance/period[3]l'].text
+                  # per18to24 = doc.elements[xpath + 'info/rainfallchance/period[4]l'].text
+                  per06to12 = doc.elements[xpath + 'info/rainfallchance/period[2]l'].text
+                  per12to18 = doc.elements[xpath + 'info/rainfallchance/period[3]l'].text
+                  per18to24 = doc.elements[xpath + 'info/rainfallchance/period[4]l'].text
+                  if per06to12.to_i >= min_per || per12to18.to_i >= min_per || per18to24.to_i >= min_per
+                    push =
+                      "今日は雨が降りそう。\n　降水確率は 6〜12時　#{per06to12}％\n　12〜18時　 #{per12to18}％\n　18〜24時　#{per18to24}％\nです。"
+                  else
+                    push =
+                      "今日は雨降らない予定。\n"
+                  end
+            # end
             else
-        #       # 晴
-              push =
-                  "明後日は雨は降らない予定\n降水確率は\n 6〜12時 #{per06to12}％\n 12〜18時  #{per12to18}％\n 18〜24時 #{per18to24}％\nです。\n"
-              end
-        #   # 	こんにちは
-            when /.*(こんにちは|こんばんは|初めまして|はじめまして|おはよう).*/
-              push =
-                "こんにちは。\n声をかけてくれてありがとう\n今日があなたにとっていい日になりますように(^^)"
-          else
-             push = "テキスト以外はわからない"
+          push = "テキスト以外はわからない"
             end
         end
         
@@ -116,18 +132,16 @@ class LinebotController < ApplicationController
     client.reply_message(event['replyToken'], message)
         # フォロー
       when Line::Bot::Event::Follow
-       
         line_id = event['source']['userId']
             # 作る
         User.create(line_id: line_id)
       # アンフォロー
       when Line::Bot::Event::Unfollow
-        
         line_id = event['source']['userId']
-                                      # 消す
+         # 消す
         User.find_by(line_id: line_id).destroy
       end
-    end
+  end
     head :ok
   end
 
